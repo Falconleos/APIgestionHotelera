@@ -4,6 +4,9 @@ import com.example.ultimate_hotel_software_v30.enums.RoomState;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList; // Importa esto
+import java.util.List;      // Importa esto
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -30,4 +33,10 @@ public class RoomEntity {
     @JoinColumn(name = "room_type_id", nullable = false)
     private RoomTypeEntity type;
 
+    //guardar los bytes directamente en una tabla separada automática:
+    @ElementCollection
+    @CollectionTable(name = "room_images", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    @Builder.Default
+    private List<byte[]> images = new ArrayList<>();
 }
