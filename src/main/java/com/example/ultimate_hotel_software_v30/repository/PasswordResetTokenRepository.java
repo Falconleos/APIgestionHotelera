@@ -1,0 +1,13 @@
+package com.example.ultimate_hotel_software_v30.repository;
+
+import com.example.ultimate_hotel_software_v30.model.PasswordResetTokenEntity;
+import com.example.ultimate_hotel_software_v30.model.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetTokenEntity, Long> {
+    Optional<PasswordResetTokenEntity> findByToken(String token);
+    void deleteByUserEntity(UserEntity userEntity);
+}
