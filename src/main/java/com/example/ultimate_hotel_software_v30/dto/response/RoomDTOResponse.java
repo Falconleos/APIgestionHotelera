@@ -22,7 +22,7 @@ public class RoomDTOResponse {
     private RoomState state;
 
     @Schema(description = "Información detallada del tipo de habitación")
-    private RoomTypeDTOResponse type;
+    private RoomTypeDTOResponse roomTypeDTOResponse;
 
     @Schema(description = "Cantidad de imágenes asociadas a la habitación", example = "3")
     private int imagesCount;

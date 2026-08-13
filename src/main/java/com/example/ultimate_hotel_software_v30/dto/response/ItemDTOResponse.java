@@ -25,7 +25,4 @@ public class ItemDTOResponse {
     @Schema(description = "Indica si es un servicio (true) o un producto físico/consumible (false)", example = "false")
     private Boolean isService;
 
-    @Schema(description = "Indica si el ítem tiene una imagen asociada", example = "true")
-    private boolean hasImage;
-
 }

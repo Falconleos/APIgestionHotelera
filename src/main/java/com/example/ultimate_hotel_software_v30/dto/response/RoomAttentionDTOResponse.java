@@ -22,7 +22,7 @@ public class RoomAttentionDTOResponse {
     private Long itemId;
 
     @Schema(description = "Descripción o nombre del ítem o servicio", example = "Cerveza en lata 473ml (Minibar)")
-    private String itemDescription;
+    private ItemDTOResponse itemDTOResponse;
 
     @Schema(description = "Indica si el registro corresponde a un servicio (true) o un producto (false)", example = "false")
     private Boolean isService;

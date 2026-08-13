@@ -18,8 +18,8 @@ public class BookingCancellationDTOResponse {
     @Schema(description = "Identificador de la reserva cancelada", example = "10")
     private Long bookingId;
 
-    @Schema(description = "Identificador del empleado que procesó la cancelación", example = "5")
-    private Long employeeId;
+    @Schema(description = "nombre y apellido del empleado que procesó la cancelación", example = "Juan Perez")
+    private String nombreApellido;
 
     @Schema(description = "Nombre de usuario del empleado que procesó la cancelación", example = "jperez")
     private String employeeUsername;

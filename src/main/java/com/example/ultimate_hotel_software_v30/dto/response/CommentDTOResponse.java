@@ -24,8 +24,11 @@ public class CommentDTOResponse {
     @Schema(description = "Fecha y hora exacta en la que se realizó el comentario", example = "2026-08-13T14:30:00")
     private LocalDateTime createdAt;
 
-    @Schema(description = "Identificador del usuario que realizó el comentario", example = "15")
-    private Long userId;
+    @Schema(description = "Nombre del usuario", example = "Juan")
+    private String name;
+
+    @Schema(description = "Apellido del usuario", example = "Pérez")
+    private String surname;
 
     @Schema(description = "Nombre de usuario de quien realizó el comentario", example = "johndoe99")
     private String username;

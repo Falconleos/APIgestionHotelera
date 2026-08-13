@@ -20,9 +20,6 @@ public class UserDTOResponse {
     @Schema(description = "Nombre de usuario para el inicio de sesión", example = "johndoe99")
     private String username;
 
-    @Schema(description = "Roles asignados al usuario en el sistema")
-    private Set<String> roles; // O puedes mapearlo a un DTO de roles si lo prefieres
-
     @Schema(description = "Nombre del usuario", example = "John")
     private String name;
 
@@ -46,22 +43,4 @@ public class UserDTOResponse {
 
     @Schema(description = "Fecha de nacimiento", example = "1995-05-15")
     private LocalDate birthDay;
-
-    @Schema(description = "Fecha de alta o creación de la cuenta", example = "2026-06-01")
-    private LocalDate createAt;
-
-    @Schema(description = "Indica si la cuenta no ha expirado", example = "true")
-    private boolean accountNonExpired;
-
-    @Schema(description = "Indica si la cuenta no está bloqueada", example = "true")
-    private boolean accountNonLocked;
-
-    @Schema(description = "Indica si las credenciales no han expirado", example = "true")
-    private boolean credentialsNonExpired;
-
-    @Schema(description = "Indica si el usuario está habilitado", example = "true")
-    private boolean enabled;
-
-    @Schema(description = "Indica si el usuario tiene una foto de perfil cargada", example = "true")
-    private boolean hasProfilePicture;
 }
