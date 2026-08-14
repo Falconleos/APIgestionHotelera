@@ -40,8 +40,8 @@ public class RoomAttentionEntity {
 
     //Empleado que otorgó/cargó el ítem o servicio
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private EmployeeEntity employeeEntity;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity userEntity;
 
     @PrePersist
     protected void onCreate() {

@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
-
     // Buscar una cuenta a partir del ID del Booking vinculado
     Optional<AccountEntity> findByBookingEntity_Id(Long bookingId);
 }

@@ -14,7 +14,7 @@ public interface RoomAttentionMapper {
     @Mapping(target = "item", ignore = true)
     @Mapping(target = "unitPrice", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "employeeEntity", ignore = true)
+    @Mapping(target = "userEntity", ignore = true) // Sincronizado con el campo de la entidad
     RoomAttentionEntity toRoomAttentionEntity(RoomAttentionDTORequest request);
 
     @Mapping(target = "bookingId", source = "bookingEntity.id")
@@ -22,7 +22,7 @@ public interface RoomAttentionMapper {
     @Mapping(target = "itemDTOResponse", source = "item")
     @Mapping(target = "isService", source = "item.isService")
     @Mapping(target = "subtotal", expression = "java(entity.getSubtotal())")
-    @Mapping(target = "employeeUsername", source = "employeeEntity.userEntity.username")
+    @Mapping(target = "employeeUsername", source = "userEntity.username") // Sincronizado con el campo de la entidad
     RoomAttentionDTOResponse toRoomAttentionDTOResponse(RoomAttentionEntity entity);
 
 }

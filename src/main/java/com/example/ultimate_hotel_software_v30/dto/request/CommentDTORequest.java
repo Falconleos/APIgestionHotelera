@@ -12,10 +12,6 @@ import lombok.*;
 @Schema(description = "Datos requeridos para crear un comentario sobre una estadia")
 public class CommentDTORequest {
 
-    @NotNull(message = "Check-in ID is required")
-    @Schema(description = "Identificador de la estadia (Check-In) asociada", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Long checkInId;
-
     @NotBlank(message = "Content is required")
     @Size(max = 500, message = "Content cannot exceed 500 characters")
     @Schema(description = "Texto del comentario", example = "Excelente servicio y habitaciÃ³n muy limpia.", requiredMode = Schema.RequiredMode.REQUIRED)
