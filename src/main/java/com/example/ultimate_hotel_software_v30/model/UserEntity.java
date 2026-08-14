@@ -74,7 +74,7 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private EmployeeEntity employee;
+    private EmployeeEntity employeeEntity;
 
 }
 

@@ -40,7 +40,7 @@ public class PaymentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = true)
-    private AccountEntity account;
+    private AccountEntity accountEntity;
 
     //usuario que registro el pago
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

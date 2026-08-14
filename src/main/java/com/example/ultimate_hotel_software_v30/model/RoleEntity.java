@@ -19,7 +19,7 @@ public class RoleEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false, length = 30)
-    private Role name;
+    private Role role;
 
     @Column(length = 250)
     private String description;

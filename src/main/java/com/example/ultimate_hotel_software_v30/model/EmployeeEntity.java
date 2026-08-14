@@ -37,5 +37,5 @@ public class EmployeeEntity{
     @OneToOne(fetch = FetchType.LAZY) // Relación 1 a 1 con carga perezosa
     @MapsId // Comparte la clave primaria con UserEntity (mantiene la eficiencia)
     @JoinColumn(name = "user_id") // Nombre de la columna FK/PK en la tabla employees
-    private UserEntity user;
+    private UserEntity userEntity;
 }
