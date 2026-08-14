@@ -16,7 +16,7 @@ public interface PaymentMapper {
     @Mapping(target = "userEntity", ignore = true)
     PaymentEntity toPaymentEntity(PaymentDTORequest request);
 
-    @Mapping(target = "accountId", source = "account.id")
+    @Mapping(target = "accountId", source = "accountEntity.id")
     @Mapping(target = "userId", source = "userEntity.id")
     @Mapping(target = "username", source = "userEntity.username")
     PaymentDTOResponse toPaymentDTOResponse(PaymentEntity entity);

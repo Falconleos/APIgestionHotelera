@@ -25,7 +25,7 @@ public class AccountEntity {
     private BookingEntity bookingEntity;
 
     @Builder.Default
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "accountEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentEntity> payments = new ArrayList<>();
 
     // 1. Estadía base fija (Valor original del check-in, no debe alterarse por actualizacion de precios de las habitaciones)

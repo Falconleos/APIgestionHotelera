@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository; // Se mantiene por si se usa en otros lados, aunque ya no es necesario para guardar el admin inicial
     private final RoomTypeRepository roomTypeRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,6 +47,15 @@ public class DataInitializer implements CommandLineRunner {
             RoleEntity adminRole = roleRepository.findByRole(Role.ADMIN)
                     .orElseThrow(() -> new RuntimeException("Error: ADMIN role not found during initialization."));
 
+            // Creamos primero la entidad del empleado que estará vinculada al usuario administrador
+            EmployeeEntity employeeEntity = EmployeeEntity.builder()
+                    .shift(Shift.MORNING)
+                    .salary(0.0)
+                    .hireDate(LocalDate.now())
+                    .employeeNumber("EMP-ADMIN")
+                    .build();
+
+            // Creamos el usuario e integramos el empleado directamente gracias a CascadeType.ALL
             UserEntity defaultAdmin = UserEntity.builder()
                     .username(adminUsername)
                     .password(passwordEncoder.encode("admin123"))
@@ -62,23 +71,16 @@ public class DataInitializer implements CommandLineRunner {
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)
                     .enabled(true)
+                    .employeeEntity(employeeEntity) // Vinculación bidireccional inicial
                     .build();
 
-            // Capturamos la entidad persistida devuelta por el save()
+            // Sincronizamos la referencia inversa del empleado hacia el usuario
+            employeeEntity.setUserEntity(defaultAdmin);
+
+            // Guardamos el usuario; la cascada guardará automáticamente al empleado con su ID compartido por @MapsId
             UserEntity savedAdmin = userRepository.save(defaultAdmin);
-            System.out.println(">> Default admin user successfully created (ID: " + savedAdmin.getId() + ") <<");
 
-            EmployeeEntity employeeEntity = EmployeeEntity.builder()
-                    .userEntity(savedAdmin) // Ajustado al nombre real en tu EmployeeEntity
-                    .shift(Shift.MORNING)
-                    .salary(0.0)
-                    .hireDate(LocalDate.now()) // Requerido por la entidad (nullable = false)
-                    .build();
-
-            savedAdmin.setEmployeeEntity(employeeEntity); // Ajustado al nombre real en UserEntity
-
-            employeeRepository.save(employeeEntity);
-            System.out.println(">> Default admin employee successfully created (ID: " + savedAdmin.getId() + ") <<");
+            System.out.println(">> Default admin user and employee successfully created (ID: " + savedAdmin.getId() + ") <<");
         }
 
         // 3. Crear RoomType por defecto ("Basic") si no existe

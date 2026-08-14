@@ -4,10 +4,14 @@ import com.example.ultimate_hotel_software_v30.enums.RoomState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Data
+@Builder
 public class RoomDTORequest {
     @NotNull(message = "Room number is required")
     @Positive(message = "Room number must be a positive integer")

@@ -19,6 +19,8 @@ public class EmployeeDTORequest {
 
     private String employeeNumber;
 
+    private String emergencyPhoneNumber;
+
     @NotNull(message = "hire date is required")
     private LocalDate hireDate;
 

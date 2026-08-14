@@ -34,6 +34,12 @@ public class CommentEntity {
     @Column(nullable = false)
     private Integer rating;
 
+    // Relación con el usuario agregada
+    @NotNull(message = "User is required")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity userEntity;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

@@ -33,5 +33,4 @@ public interface UserMapper {
     UserEntity toUserEntityFromCreation(UserDTORequestCreation request);
 
     UserDTOResponse toUserDTOResponse(UserEntity entity);
-
 }

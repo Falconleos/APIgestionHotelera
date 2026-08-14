@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
-    List<CommentEntity> findByCheckInId(Long checkInId);
-    List<CommentEntity> findByUserId(Long userId);
-    boolean existsByCheckInIdAndUserId(Long checkInId, Long userId);
+
+    List<CommentEntity> findByUserEntity_Id(Long id);
 }

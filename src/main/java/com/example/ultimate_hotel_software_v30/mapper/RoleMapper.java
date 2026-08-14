@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface RoleMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", expression = "java(com.example.ultimate_hotel_software_v30.enums.Role.valueOf(request.getName()))")
+    @Mapping(target = "role", expression = "java(com.example.ultimate_hotel_software_v30.enums.Role.valueOf(request.getName()))")
     RoleEntity toRoleEntity(RoleDTORequest request);
 
     RoleDTOResponse toRoleDTOResponse(RoleEntity entity);

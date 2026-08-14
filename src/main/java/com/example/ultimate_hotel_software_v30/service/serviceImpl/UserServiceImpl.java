@@ -14,6 +14,7 @@ import com.example.ultimate_hotel_software_v30.repository.RoleRepository;
 import com.example.ultimate_hotel_software_v30.repository.UserRepository;
 import com.example.ultimate_hotel_software_v30.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -135,4 +137,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("username inexistent")));
     }
 
+    @Override
+    public Optional<UserEntity> userEntityByDni(String dni) {
+        return userRepository.findByDni(dni);
+    }
 }
