@@ -175,4 +175,13 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toUserDTOResponse)
                 .toList();
     }
+
+    @Override
+    public byte[] getProfilePicture(Long id) {
+        UserEntity userEntity = findEntityById(id);
+        if (userEntity.getProfilePicture() == null) {
+            throw new RuntimeException("El usuario no tiene una foto de perfil asignada.");
+        }
+        return userEntity.getProfilePicture();
+    }
 }

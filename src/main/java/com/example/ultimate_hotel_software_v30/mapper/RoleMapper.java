@@ -13,6 +13,7 @@ public interface RoleMapper {
     @Mapping(target = "role", expression = "java(com.example.ultimate_hotel_software_v30.enums.Role.valueOf(request.getName()))")
     RoleEntity toRoleEntity(RoleDTORequest request);
 
+    @Mapping(target = "name", source = "role")
     RoleDTOResponse toRoleDTOResponse(RoleEntity entity);
 
 }

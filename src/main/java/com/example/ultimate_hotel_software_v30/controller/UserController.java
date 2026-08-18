@@ -130,4 +130,18 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsersByRole(roleName));
     }
 
+    @GetMapping("/{id}/profile-picture")
+    @Operation(
+            summary = "Obtener foto de perfil del usuario",
+            description = "Devuelve los bytes de la imagen de perfil asociada al usuario por su ID."
+    )
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
+        byte[] imageBytes = userService.getProfilePicture(id);
+
+        // Puedes configurar el tipo de contenido genérico de imagen
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG según corresponda
+                .body(imageBytes);
+    }
+
 }

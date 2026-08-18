@@ -21,4 +21,5 @@ public interface UserService {
     Optional<UserEntity> userEntityByDni(String dni);
     UserDTOResponse findByUsername(String username);
     List<UserDTOResponse> getUsersByRole(String roleName);
+    byte[] getProfilePicture(Long id);
 }
