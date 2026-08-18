@@ -13,5 +13,5 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
 
     List<BookingEntity> findByActive(Boolean active);
     boolean existsByRoomEntity_Id(Long roomId);
-    List<BookingEntity> findByBookingState(BookingState state);
+    List<BookingEntity> findByState(BookingState state);
 }

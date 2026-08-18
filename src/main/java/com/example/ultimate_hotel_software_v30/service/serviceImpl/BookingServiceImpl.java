@@ -293,7 +293,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<BookingDTOResponse> getBookingsByState(BookingState state) {
-        return bookingRepository.findByBookingState(state).stream()
+        return bookingRepository.findByState(state).stream()
                 .map(bookingMapper::toBookingDTOResponse)
                 .toList();
     }
