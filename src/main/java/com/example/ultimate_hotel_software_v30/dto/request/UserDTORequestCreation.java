@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile; // <-- No olvides este import
 
 import java.time.LocalDate;
 
@@ -13,9 +14,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-@Schema(description = "Datos detallados requeridos para que un empleado cree un nuevo usuario en el sistema")
-
+@Schema(description = "Datos detallados requeridos para que un empleado cree un nuevo usuario en el sistema con foto de perfil opcional")
 public class UserDTORequestCreation {
+
     @Schema(
             description = "Nombre de usuario único para iniciar sesión",
             example = "johndoe99",
@@ -112,5 +113,12 @@ public class UserDTORequestCreation {
     @Schema(description = "Rol asignado al usuario", example = "RECEPCIONIST", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Role is necessary")
     private Role role;
+
+    @Schema(
+            description = "Archivo de imagen para la foto de perfil (Formatos permitidos: JPG, JPEG, PNG. Tamaño máximo recomendado: 2MB)",
+            type = "string",
+            format = "binary"
+    )
+    private MultipartFile profilePictureFile;
 
 }

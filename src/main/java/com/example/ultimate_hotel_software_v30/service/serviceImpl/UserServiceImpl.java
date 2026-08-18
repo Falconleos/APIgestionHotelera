@@ -14,12 +14,13 @@ import com.example.ultimate_hotel_software_v30.repository.RoleRepository;
 import com.example.ultimate_hotel_software_v30.repository.UserRepository;
 import com.example.ultimate_hotel_software_v30.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -62,25 +63,48 @@ public class UserServiceImpl implements UserService {
             throw new DuplicatedDNIException("dni already exists");
         }
 
-        // 2. Mapear DTO a Entidad (asumiendo que existe el método en el mapper)
+        // 2. Mapear DTO a Entidad
         UserEntity userEntity = userMapper.toUserEntityFromCreation(request);
 
-        // 3. Obtener el rol dinámico enviado en el request (convirtiendo el Enum a String)
+        // 3. Validación y procesamiento de la foto de perfil (si se adjuntó una)
+        MultipartFile profilePic = request.getProfilePictureFile();
+        if (profilePic != null && !profilePic.isEmpty()) {
+            // A. Validar tamaño máximo (Ejemplo: 2 MB = 2 * 1024 * 1024 bytes)
+            long maxBytes = 2 * 1024 * 1024;
+            if (profilePic.getSize() > maxBytes) {
+                throw new IllegalArgumentException("La imagen es demasiado grande. El tamaño máximo permitido es 2 MB.");
+            }
+
+            // B. Validar formato (contentType)
+            String contentType = profilePic.getContentType();
+            if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/jpg"))) {
+                throw new IllegalArgumentException("Formato de imagen no válido. Solo se permiten archivos JPEG, JPG o PNG.");
+            }
+
+            // C. Convertir a byte[] y asignarlo a la entidad
+            try {
+                userEntity.setProfilePicture(profilePic.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Error al procesar la foto de perfil", e);
+            }
+        }
+
+        // 4. Obtener el rol dinámico enviado en el request
         RoleEntity userRole = roleRepository.findByRole(request.getRole())
                 .orElseThrow(() -> new InvalidNameException("No role named: " + request.getRole()));
         userEntity.setRoles(Set.of(userRole));
 
-        // 4. Encriptar contraseña provista
+        // 5. Encriptar contraseña provista
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // 5. Configurar campos obligatorios y estados de seguridad de la cuenta
+        // 6. Configurar campos obligatorios y estados de seguridad de la cuenta
         userEntity.setCreateAt(LocalDate.now());
         userEntity.setAccountNonExpired(true);
         userEntity.setAccountNonLocked(true);
         userEntity.setCredentialsNonExpired(true);
         userEntity.setEnabled(true);
 
-        // 6. Guardar en Base de Datos
+        // 7. Guardar en Base de Datos
         UserEntity savedUser = userRepository.save(userEntity);
 
         return userMapper.toUserDTOResponse(savedUser);
@@ -140,5 +164,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserEntity> userEntityByDni(String dni) {
         return userRepository.findByDni(dni);
+    }
+
+    @Override
+    public List<UserDTOResponse> getUsersByRole(String roleName) {
+        return userRepository.findAll().stream()
+                // Filtra los usuarios que contengan el rol solicitado en su Set de roles
+                .filter(user -> user.getRoles().stream()
+                        .anyMatch(role -> role.getRole().name().equalsIgnoreCase(roleName)))
+                .map(userMapper::toUserDTOResponse)
+                .toList();
     }
 }

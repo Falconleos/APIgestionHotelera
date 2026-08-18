@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Tag(name = "GestionUsuarios", description = "Endpoints privados para la gestión de funcionalidades de usuarios")
-
 public class UserController {
 
     private final AuthService authService;
@@ -47,18 +47,19 @@ public class UserController {
 
     //-----------------------------recepcionista o administrador crean usuario---------------------------//
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // <-- Indicamos que recibe multipart
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
     @Operation(
-            summary = "Crear nuevo usuario (Personal)",
-            description = "Permite a un administrador o recepcionista registrar un nuevo usuario en el sistema con una contraseña temporal."
+            summary = "Crear nuevo usuario con foto de perfil (Personal)",
+            description = "Permite a un administrador o recepcionista registrar un nuevo usuario en el sistema con foto de perfil opcional y contraseña temporal."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "El email o DNI ya existen en el sistema"),
+            @ApiResponse(responseCode = "400", description = "El email/DNI ya existen o la imagen no es válida (tamaño/formato)"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
-    public ResponseEntity<UserDTOResponse> createUser(@Valid @RequestBody UserDTORequestCreation userDtoRequestCreation) {
+    public ResponseEntity<UserDTOResponse> createUser(
+            @Valid @ModelAttribute UserDTORequestCreation userDtoRequestCreation) {
         return new ResponseEntity<>(userService.createUserWithRole(userDtoRequestCreation), HttpStatus.CREATED);
     }
 
@@ -117,6 +118,16 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/role/{roleName}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
+    @Operation(
+            summary = "Listar usuarios por rol",
+            description = "Devuelve una lista de usuarios filtrada por el rol especificado (ej. GUEST, ADMIN)."
+    )
+    public ResponseEntity<List<UserDTOResponse>> getUsersByRole(@PathVariable String roleName) {
+        return ResponseEntity.ok(userService.getUsersByRole(roleName));
     }
 
 }

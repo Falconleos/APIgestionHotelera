@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
 
@@ -238,9 +239,13 @@ public class GlobalExceptionHandler {
 
     }
 
+    // NUEVO: Capturar cuando el archivo excede el tamaño máximo permitido
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorDTOResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, WebRequest webRequest) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorDTOResponse("La imagen seleccionada es demasiado grande. El tamaño máximo permitido es 2 MB.", webRequest.getDescription(false)));
+    }
 
-
-    /// /////////////////////
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTOResponse>handleInvalidId(Exception ex, WebRequest webRequest){
 
@@ -248,7 +253,5 @@ public class GlobalExceptionHandler {
                 .body( new ErrorDTOResponse(ex.getMessage(), webRequest.getDescription(false)) );
 
     }
-
-
 
 }

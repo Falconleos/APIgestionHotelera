@@ -20,4 +20,5 @@ public interface UserService {
     UserDTOResponse userByDni(String dni);
     Optional<UserEntity> userEntityByDni(String dni);
     UserDTOResponse findByUsername(String username);
+    List<UserDTOResponse> getUsersByRole(String roleName);
 }

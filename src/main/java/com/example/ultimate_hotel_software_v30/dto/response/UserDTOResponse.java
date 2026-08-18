@@ -43,4 +43,7 @@ public class UserDTOResponse {
 
     @Schema(description = "Fecha de nacimiento", example = "1995-05-15")
     private LocalDate birthDay;
+
+    @Schema(description = "Roles asignados al usuario")
+    private Set<RoleDTOResponse> roles;
 }
