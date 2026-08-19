@@ -12,9 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,19 +29,16 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    /*---------admin crea empleado---------------*/
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Crear perfil de empleado",
-            description = "Asocia datos laborales (turno y salario) a un usuario ya existente en el sistema. Acción exclusiva de Administradores."
+            description = "Asocia datos laborales y permite subir foto de perfil. Acción exclusiva de Administradores."
     )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Perfil de empleado creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "El usuario provisto no existe o ya tiene un perfil de empleado asociado"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado")
-    })
-    public ResponseEntity<EmployeeDTOResponse> createEmployee(@Valid @RequestBody EmployeeCreateUnifiedDTO request) {
+    public ResponseEntity<EmployeeDTOResponse> createEmployee(
+            @ModelAttribute @Valid EmployeeCreateUnifiedDTO request) {
+
+        // Como el archivo y los campos ya viajan limpios desde Angular, procesamos el DTO unificado
         return new ResponseEntity<>(employeeService.createEmployee(request), HttpStatus.CREATED);
     }
 
