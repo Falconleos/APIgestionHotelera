@@ -16,7 +16,7 @@ public interface UserMapper {
     @Mapping(target = "accountNonExpired", ignore = true)
     @Mapping(target = "accountNonLocked", ignore = true)
     @Mapping(target = "credentialsNonExpired", ignore = true)
-    @Mapping(target = "enabled", ignore = true)
+    @Mapping(target = "enabled", ignore = true) // Aquí se mantiene ignorado para el update general si gustas
     @Mapping(target = "profilePicture", ignore = true)
     @Mapping(target = "employeeEntity", ignore = true)
     UserEntity toUserEntity(UserDTORequest request);
@@ -27,7 +27,7 @@ public interface UserMapper {
     @Mapping(target = "accountNonExpired", ignore = true)
     @Mapping(target = "accountNonLocked", ignore = true)
     @Mapping(target = "credentialsNonExpired", ignore = true)
-    @Mapping(target = "enabled", ignore = true)
+    // ELIMINADO: @Mapping(target = "enabled", ignore = true) para que MapStruct SÍ lea el enabled del request de creación
     @Mapping(target = "profilePicture", ignore = true)
     @Mapping(target = "employeeEntity", ignore = true)
     UserEntity toUserEntityFromCreation(UserDTORequestCreation request);

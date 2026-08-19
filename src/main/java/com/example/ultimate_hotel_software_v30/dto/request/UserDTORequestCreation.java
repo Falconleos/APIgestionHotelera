@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile; // <-- No olvides este import
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -120,5 +120,8 @@ public class UserDTORequestCreation {
             format = "binary"
     )
     private MultipartFile profilePictureFile;
+
+    @Schema(description = "Estado de activación de la cuenta", example = "true")
+    private Boolean enabled; // <-- Añadido para recibir el estado enviado desde el frontend
 
 }

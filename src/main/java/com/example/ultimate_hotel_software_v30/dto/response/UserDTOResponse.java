@@ -46,4 +46,7 @@ public class UserDTOResponse {
 
     @Schema(description = "Roles asignados al usuario")
     private Set<RoleDTOResponse> roles;
+
+    @Schema(description = "Estado de activación de la cuenta", example = "true")
+    private Boolean enabled;
 }

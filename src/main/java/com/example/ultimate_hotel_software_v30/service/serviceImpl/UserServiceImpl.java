@@ -102,7 +102,13 @@ public class UserServiceImpl implements UserService {
         userEntity.setAccountNonExpired(true);
         userEntity.setAccountNonLocked(true);
         userEntity.setCredentialsNonExpired(true);
-        userEntity.setEnabled(true);
+
+        // Asignación segura del estado (si viene nulo por parte del form-data, se fuerza a true)
+        if (request.getEnabled() != null) {
+            userEntity.setEnabled(request.getEnabled());
+        } else {
+            userEntity.setEnabled(true);
+        }
 
         // 7. Guardar en Base de Datos
         UserEntity savedUser = userRepository.save(userEntity);

@@ -56,16 +56,20 @@ public class UserEntity {
     private LocalDate createAt;
 
     @Column(nullable = false)
-    private boolean accountNonExpired;
+    @Builder.Default
+    private Boolean accountNonExpired = true;
 
     @Column(nullable = false)
-    private boolean accountNonLocked;
+    @Builder.Default
+    private Boolean accountNonLocked = true;
 
     @Column(nullable = false)
-    private boolean credentialsNonExpired;
+    @Builder.Default
+    private Boolean credentialsNonExpired = true;
 
     @Column(nullable = false)
-    private boolean enabled;
+    @Builder.Default
+    private Boolean enabled = true;
 
     // Campo para la foto de perfil almacenada en la base de datos como binario
     @Lob
@@ -75,6 +79,23 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private EmployeeEntity employeeEntity;
+
+    // Métodos requeridos por la interfaz UserDetails de Spring Security
+    public boolean isEnabled() {
+        return enabled != null ? enabled : true;
+    }
+
+    public boolean isAccountNonExpired() {
+        return accountNonExpired != null ? accountNonExpired : true;
+    }
+
+    public boolean isAccountNonLocked() {
+        return accountNonLocked != null ? accountNonLocked : true;
+    }
+
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired != null ? credentialsNonExpired : true;
+    }
 
 }
 
