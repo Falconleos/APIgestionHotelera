@@ -1,11 +1,11 @@
 package com.example.ultimate_hotel_software_v30.dto.request;
 
 import com.example.ultimate_hotel_software_v30.enums.BookingState;
-import com.example.ultimate_hotel_software_v30.model.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal; // o Double, según uses para el dinero
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -45,15 +45,18 @@ public class BookingDTORequest {
     @Schema(description = "Teléfono de contacto del titular", example = "+5492231234567")
     private String guestPhone;
 
-    @Schema(description = "Identificador del usuario registrado (opcional, null si es reserva telefónica/rápida)", example = "15")
+    @Schema(description = "Identificador del usuario registrado (opcional)", example = "15")
     private Long userId;
 
     @Size(max = 250, message = "The observation cannot exceed 250 characters")
-    @Schema(description = "Aclaraciones o pedidos especiales del pasajero", example = "Solicita cuna para bebé o vista externa")
+    @Schema(description = "Aclaraciones o pedidos especiales", example = "Solicita cuna para bebé")
     private String observation;
 
     @NotNull(message = "Room ID is required")
     @Schema(description = "Identificador de la habitación física a reservar", example = "3", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long roomId;
 
+    @NotNull(message = "Total price is required")
+    @Schema(description = "Precio total congelado de la estadía", example = "375000.00", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Double totalPrice; // O BigDecimal según tu entidad
 }

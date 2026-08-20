@@ -127,7 +127,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setUserEntity(null); // Es una reserva telefónica / rápida sin cuenta de usuario asociada
         }
 
-        // 4. Asignaciones restantes y guardado
+        // 4. Asignaciones restantes y guardado (Dejando el empleado de check-in nulo al crear)
         booking.setEmployeeBookingEntity(employee);
         booking.setRoomEntity(room);
         booking.setTotalPrice(totalPrice);

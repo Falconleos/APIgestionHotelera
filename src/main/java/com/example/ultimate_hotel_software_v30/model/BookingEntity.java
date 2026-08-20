@@ -44,8 +44,8 @@ public class BookingEntity {
     @Column(nullable = false, length = 30)
     private String guestPhone;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = true)
     private UserEntity userEntity;
 
     @Column(length = 64)
@@ -61,8 +61,8 @@ public class BookingEntity {
     @JoinColumn(name = "employeeBooking_id", nullable = false)
     private EmployeeEntity employeeBookingEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "employeeCheckIn_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employeeCheckIn_id", nullable = true)
     private EmployeeEntity employeeCheckInEntity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
