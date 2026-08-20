@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -104,6 +105,34 @@ public class RoomController {
     @Operation(summary = "Obtener el conteo total de habitaciones registradas")
     public ResponseEntity<Integer> getRoomCount() {
         return ResponseEntity.ok(roomService.roomCount());
+    }
+
+    /*--------- Agregar imágenes a una habitación existente (ADMIN) ---------------*/
+    @PostMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Agregar imágenes a una habitación", description = "Sube y añade nuevas imágenes a una habitación ya existente.")
+    public ResponseEntity<RoomDTOResponse> uploadImages(
+            @PathVariable Long id,
+            @RequestParam("images") List<MultipartFile> images
+    ) {
+        RoomDTOResponse updatedRoom = roomService.addImages(id, images);
+        return ResponseEntity.ok(updatedRoom);
+    }
+
+    /*--------- Obtener una imagen específica de la habitación (ADMIN y RECEPCIONIST) ---------------*/
+    @GetMapping("/{id}/images/{index}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
+    @Operation(summary = "Obtener una imagen de la habitación por su índice", description = "Retorna el archivo binario de la imagen según la posición en la lista.")
+    public ResponseEntity<byte[]> getRoomImage(
+            @PathVariable Long id,
+            @PathVariable int index
+    ) {
+        byte[] imageBytes = roomService.getImage(id, index);
+
+        // Puedes ajustar el MediaType según prefieras (ej. IMAGE_JPEG_VALUE o IMAGE_PNG_VALUE)
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 
 }

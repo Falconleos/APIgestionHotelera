@@ -177,4 +177,42 @@ public class RoomServiceImpl implements RoomService {
     public Integer roomCount() {
         return (int) roomRepository.count();
     }
+
+    @Override
+    @Transactional
+    public RoomDTOResponse addImages(Long id, List<MultipartFile> images) {
+        RoomEntity room = findEntityById(id);
+
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile file : images) {
+                if (!file.isEmpty()) {
+                    try {
+                        room.getImages().add(file.getBytes());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to store image file", e);
+                    }
+                }
+            }
+        }
+
+        RoomEntity updatedRoom = roomRepository.save(room);
+        return roomMapper.toRoomDTOResponse(updatedRoom);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getImage(Long roomId, int imageIndex) {
+        RoomEntity room = findEntityById(roomId);
+
+        if (room.getImages() == null || room.getImages().isEmpty()) {
+            throw new RuntimeException("No images found for room ID: " + roomId);
+        }
+
+        if (imageIndex < 0 || imageIndex >= room.getImages().size()) {
+            throw new RuntimeException("Image index out of bounds: " + imageIndex);
+        }
+
+        return room.getImages().get(imageIndex);
+    }
+
 }

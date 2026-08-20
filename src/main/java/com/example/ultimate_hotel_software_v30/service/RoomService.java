@@ -5,6 +5,7 @@ import com.example.ultimate_hotel_software_v30.dto.request.RoomUpdateDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.response.RoomDTOResponse;
 import com.example.ultimate_hotel_software_v30.enums.RoomState;
 import com.example.ultimate_hotel_software_v30.model.RoomEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,4 +34,10 @@ public interface RoomService {
 
     // 7. Calculos
     Integer roomCount();
+
+    // Nuevo método para agregar imágenes a una habitación existente
+    RoomDTOResponse addImages(Long id, List<MultipartFile> images);
+
+    // Nuevo método para recuperar el byte[] de una imagen específica por su índice
+    byte[] getImage(Long roomId, int imageIndex);
 }
