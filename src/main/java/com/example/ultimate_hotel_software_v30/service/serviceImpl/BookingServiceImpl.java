@@ -5,13 +5,14 @@ import com.example.ultimate_hotel_software_v30.dto.request.BookingDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.response.BookingCancellationDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.BookingDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.RoomDTOResponse;
-import com.example.ultimate_hotel_software_v30.dto.response.UserDTOResponse; // O UserDTOResponse según corresponda en tu proyecto
+import com.example.ultimate_hotel_software_v30.dto.response.UserDTOResponse;
 import com.example.ultimate_hotel_software_v30.enums.BookingState;
 import com.example.ultimate_hotel_software_v30.exceptions.*;
 import com.example.ultimate_hotel_software_v30.mapper.BookingCancellationMapper;
 import com.example.ultimate_hotel_software_v30.mapper.BookingMapper;
 import com.example.ultimate_hotel_software_v30.mapper.RoomMapper;
 import com.example.ultimate_hotel_software_v30.model.*;
+import com.example.ultimate_hotel_software_v30.repository.AccountRepository;
 import com.example.ultimate_hotel_software_v30.repository.BookingCancellationRepository;
 import com.example.ultimate_hotel_software_v30.repository.BookingRepository;
 import com.example.ultimate_hotel_software_v30.repository.UserRepository;
@@ -44,6 +45,9 @@ public class BookingServiceImpl implements BookingService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final EmployeeService employeeService;
+
+    // Repositorio de cuentas agregado para la creación automática
+    private final AccountRepository accountRepository;
 
     // 1. Busqueda por ID
     @Override
@@ -127,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setUserEntity(null); // Es una reserva telefónica / rápida sin cuenta de usuario asociada
         }
 
-        // 4. Asignaciones restantes y guardado (Dejando el empleado de check-in nulo al crear)
+        // 4. Asignaciones restantes y guardado de la reserva
         booking.setEmployeeBookingEntity(employee);
         booking.setRoomEntity(room);
         booking.setTotalPrice(totalPrice);
@@ -136,6 +140,19 @@ public class BookingServiceImpl implements BookingService {
         booking.setCreatedAt(LocalDateTime.now());
 
         BookingEntity savedBooking = bookingRepository.save(booking);
+
+        // 5. Creación automática de la cuenta financiera asociada a la reserva
+        AccountEntity account = AccountEntity.builder()
+                .bookingEntity(savedBooking)
+                .baseAmount(totalPrice)
+                .servicesTotal(0.0)
+                .paidAmount(0.0)
+                .isPaid(false)
+                .adjustmentPercentage(0)
+                .build();
+
+        accountRepository.save(account);
+
         return bookingMapper.toBookingDTOResponse(savedBooking);
     }
 

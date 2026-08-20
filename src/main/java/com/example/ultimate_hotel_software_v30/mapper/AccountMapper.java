@@ -9,6 +9,12 @@ import org.mapstruct.Mapping;
 public interface AccountMapper {
 
     @Mapping(target = "bookingId", source = "bookingEntity.id")
+    @Mapping(target = "checkInDate", source = "bookingEntity.checkIn")
+    @Mapping(target = "checkOutDate", source = "bookingEntity.checkOut")
+    @Mapping(target = "roomNumber", source = "bookingEntity.roomEntity.number")
+    @Mapping(target = "user.name", source = "bookingEntity.guestFirstName")
+    @Mapping(target = "user.surname", source = "bookingEntity.guestLastName")
+    @Mapping(target = "user.dni", source = "bookingEntity.userEntity.dni")
     AccountDTOResponse toAccountDTOResponse(AccountEntity entity);
 
 }
