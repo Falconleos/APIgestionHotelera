@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -45,6 +46,8 @@ public class BookingServiceImpl implements BookingService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final EmployeeService employeeService;
+
+    private final CreditNoteService creditNoteService;
 
     // Repositorio de cuentas agregado para la creación automática
     private final AccountRepository accountRepository;
@@ -183,6 +186,21 @@ public class BookingServiceImpl implements BookingService {
         booking.setState(BookingState.CANCELLED);
         booking.setActive(false);
         bookingRepository.save(booking);
+
+        // --- GESTIÓN DE LA CUENTA Y NOTA DE CRÉDITO ---
+        AccountEntity account = accountRepository.findByBookingEntity_Id(booking.getId())
+                .orElseThrow(() -> new InvalidIdException("Account not found for booking ID: " + booking.getId()));
+
+        if (account.getPaidAmount() > 0) {
+            // Si hay dinero pagado, generamos la Nota de Crédito por el monto abonado y marcamos como REFUNDED
+            creditNoteService.createCreditNote(account, request.getReason());
+            account.setState(com.example.ultimate_hotel_software_v30.enums.AccountState.REFUNDED);
+        } else {
+            // Si no se había pagado nada, solo cancelamos la cuenta
+            account.setState(com.example.ultimate_hotel_software_v30.enums.AccountState.CANCELLED);
+        }
+        accountRepository.save(account);
+        // ----------------------------------------------
 
         Object principal = SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
