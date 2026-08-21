@@ -53,11 +53,11 @@ public class BookingDTOResponse {
     @Schema(description = "Observaciones o peticiones especiales de la reserva", example = "Cama matrimonial y habitación en piso alto si es posible")
     private String observation;
 
-    @Schema(description = "username de usuario del empleado que realizó/creó la reserva", example = "jperez")
-    private String employeeBookingUsername;
+    @Schema(description = "username del usuario  que realizó/creó la reserva", example = "jperez")
+    private String userBookingUsername;
 
-    @Schema(description = "username de usuario del empleado que realizó el Check-in (opcional)", example = "mromero")
-    private String employeeCheckInUsername;
+    @Schema(description = "username del usuario que realizó el Check-in (opcional)", example = "mromero")
+    private String userCheckInUsername;
 
     @Schema(description = "Número de la habitación asignada", example = "204")
     private Integer roomNumber;

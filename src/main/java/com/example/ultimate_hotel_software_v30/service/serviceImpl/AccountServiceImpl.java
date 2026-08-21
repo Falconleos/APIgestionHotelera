@@ -10,6 +10,7 @@ import com.example.ultimate_hotel_software_v30.model.PaymentEntity;
 import com.example.ultimate_hotel_software_v30.model.UserEntity;
 import com.example.ultimate_hotel_software_v30.repository.AccountRepository;
 import com.example.ultimate_hotel_software_v30.repository.BookingRepository;
+import com.example.ultimate_hotel_software_v30.repository.PaymentRepository;
 import com.example.ultimate_hotel_software_v30.repository.UserRepository;
 import com.example.ultimate_hotel_software_v30.service.AccountService;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
+    private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
 
     @Override
@@ -105,14 +107,16 @@ public class AccountServiceImpl implements AccountService {
         payment.setAccountEntity(account);
         payment.setUserEntity(user);
 
-        // Agregamos el pago a la lista de la cuenta
+        // 1. Guardamos el pago explícitamente primero para que deje de ser "transient"
+        paymentRepository.save(payment);
+
+        // 2. Lo agregamos a la colección de la cuenta
         account.getPayments().add(payment);
 
+        // 3. Recalculamos y guardamos la cuenta
         recalculateAndSave(account);
 
-        // Retornamos el DTO del pago recién guardado
-        PaymentEntity savedPayment = account.getPayments().get(account.getPayments().size() - 1);
-        return paymentMapper.toPaymentDTOResponse(savedPayment);
+        return paymentMapper.toPaymentDTOResponse(payment);
     }
 
     @Override

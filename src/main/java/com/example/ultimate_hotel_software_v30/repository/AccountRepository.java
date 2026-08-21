@@ -4,7 +4,6 @@ import com.example.ultimate_hotel_software_v30.model.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.lang.ScopedValue;
 import java.util.Optional;
 
 @Repository

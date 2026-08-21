@@ -58,12 +58,12 @@ public class BookingEntity {
     private Boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "employeeBooking_id", nullable = false)
-    private EmployeeEntity employeeBookingEntity;
+    @JoinColumn(name = "userBooking_id", nullable = false)
+    private UserEntity userBookingEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employeeCheckIn_id", nullable = true)
-    private EmployeeEntity employeeCheckInEntity;
+    @JoinColumn(name = "userCheckIn_id", nullable = true)
+    private UserEntity userCheckInEntity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "room_id", nullable = false)

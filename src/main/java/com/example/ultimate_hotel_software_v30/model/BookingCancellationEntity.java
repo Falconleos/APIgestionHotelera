@@ -23,8 +23,8 @@ public class BookingCancellationEntity {
     private BookingEntity booking;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private EmployeeEntity employee;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity userEntity;
 
     @Column(nullable = false)
     private LocalDateTime cancellationDate;
@@ -39,5 +39,4 @@ public class BookingCancellationEntity {
         }
         cancellationDate = LocalDateTime.now();
     }
-
 }

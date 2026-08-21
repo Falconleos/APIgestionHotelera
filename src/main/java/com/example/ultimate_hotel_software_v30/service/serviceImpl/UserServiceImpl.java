@@ -168,6 +168,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findEntityByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("username inexistent"));
+    }
+
+    @Override
     public Optional<UserEntity> userEntityByDni(String dni) {
         return userRepository.findByDni(dni);
     }

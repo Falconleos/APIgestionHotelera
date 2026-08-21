@@ -14,8 +14,8 @@ public interface BookingMapper {
     @Mapping(target = "userEntity", ignore = true)
     @Mapping(target = "qrBooking", ignore = true)
     @Mapping(target = "active", constant = "true")
-    @Mapping(target = "employeeBookingEntity", ignore = true)
-    @Mapping(target = "employeeCheckInEntity", ignore = true)
+    @Mapping(target = "userBookingEntity", ignore = true)
+    @Mapping(target = "userCheckInEntity", ignore = true)
     @Mapping(target = "roomEntity", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "cancellation", ignore = true)
@@ -25,9 +25,12 @@ public interface BookingMapper {
     @Mapping(target = "name", source = "userEntity.name")
     @Mapping(target = "surname", source = "userEntity.surname")
     @Mapping(target = "username", source = "userEntity.username")
-    @Mapping(target = "employeeBookingUsername", source = "employeeBookingEntity.userEntity.username")
-    @Mapping(target = "employeeCheckInUsername", source = "employeeCheckInEntity.userEntity.username")
+    @Mapping(target = "userBookingUsername", source = "userBookingEntity.username")
+    @Mapping(target = "userCheckInUsername", source = "userCheckInEntity.username")
     @Mapping(target = "roomNumber", source = "roomEntity.number")
+    @Mapping(target = "guestFirstName", source = "guestFirstName")
+    @Mapping(target = "guestLastName", source = "guestLastName")
+    @Mapping(target = "guestPhone", source = "guestPhone")
     BookingDTOResponse toBookingDTOResponse(BookingEntity entity);
 
 }

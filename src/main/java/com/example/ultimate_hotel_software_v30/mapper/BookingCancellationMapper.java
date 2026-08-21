@@ -11,13 +11,13 @@ public interface BookingCancellationMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "booking", ignore = true)
-    @Mapping(target = "employee", ignore = true)
+    @Mapping(target = "userEntity", ignore = true)
     @Mapping(target = "cancellationDate", ignore = true)
     BookingCancellationEntity toBookingCancellationEntity(BookingCancellationDTORequest request);
 
     @Mapping(target = "bookingId", source = "booking.id")
-    @Mapping(target = "nombreApellido", expression = "java(entity.getEmployee().getUserEntity().getName() + \" \" + entity.getEmployee().getUserEntity().getSurname())")
-    @Mapping(target = "employeeUsername", source = "employee.userEntity.username")
+    @Mapping(target = "nombreApellido", expression = "java(entity.getUserEntity().getName() + \" \" + entity.getUserEntity().getSurname())")
+    @Mapping(target = "employeeUsername", source = "userEntity.username")
     BookingCancellationDTOResponse toBookingCancellationDTOResponse(BookingCancellationEntity entity);
 
 }

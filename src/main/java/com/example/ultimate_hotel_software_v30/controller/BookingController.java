@@ -2,8 +2,10 @@ package com.example.ultimate_hotel_software_v30.controller;
 
 import com.example.ultimate_hotel_software_v30.dto.request.BookingCancellationDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.request.BookingDTORequest;
+import com.example.ultimate_hotel_software_v30.dto.request.PaymentDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.response.BookingCancellationDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.BookingDTOResponse;
+import com.example.ultimate_hotel_software_v30.dto.response.PaymentDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.RoomDTOResponse;
 import com.example.ultimate_hotel_software_v30.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -148,6 +150,23 @@ public class BookingController {
             @PathVariable Long userId) {
         BookingDTOResponse response = bookingService.assignUserToBooking(bookingId, userId);
         return ResponseEntity.ok(response);
+    }
+    /*--------- 12. Obtener los pagos/señas de una reserva (ADMIN o RECEPCIONIST) ---------------*/
+    @GetMapping("/{bookingId}/payments")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
+    @Operation(summary = "Listar pagos de una reserva", description = "Devuelve todas las señas o pagos asociados a una reserva específica.")
+    public ResponseEntity<List<PaymentDTOResponse>> getPaymentsByBookingId(@PathVariable Long bookingId) {
+        List<PaymentDTOResponse> payments = bookingService.getPaymentsByBookingId(bookingId);
+        return ResponseEntity.ok(payments);
+    }
+
+    /*--------- 13. Registrar una nueva seña/pago (ADMIN o RECEPCIONIST) ---------------*/
+    @PostMapping("/payments")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
+    @Operation(summary = "Registrar seña o pago", description = "Agrega un pago a la cuenta financiera de la reserva.")
+    public ResponseEntity<PaymentDTOResponse> addPaymentToBooking(@Valid @RequestBody PaymentDTORequest request) {
+        PaymentDTOResponse newPayment = bookingService.addPaymentToBooking(request);
+        return new ResponseEntity<>(newPayment, HttpStatus.CREATED);
     }
 
 }
