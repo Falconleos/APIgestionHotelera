@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,19 +39,24 @@ public class ItemController {
         return ResponseEntity.ok(itemService.findById(id));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'ROLE_ADMIN', 'RECEPCIONIST', 'ROLE_RECEPCIONIST')")
-    @Operation(summary = "Crear un nuevo ítem")
-    public ResponseEntity<ItemDTOResponse> createItem(@Valid @RequestBody ItemDTORequest request) {
-        ItemDTOResponse response = itemService.createItem(request);
+    @Operation(summary = "Crear un nuevo ítem con imagen opcional")
+    public ResponseEntity<ItemDTOResponse> createItem(
+            @RequestPart("item") @Valid ItemDTORequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        ItemDTOResponse response = itemService.createItem(request, file);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'ROLE_ADMIN', 'RECEPCIONIST', 'ROLE_RECEPCIONIST')")
-    @Operation(summary = "Actualizar un ítem existente")
-    public ResponseEntity<ItemDTOResponse> updateItem(@PathVariable Long id, @Valid @RequestBody ItemDTORequest request) {
-        ItemDTOResponse response = itemService.updateItem(id, request);
+    @Operation(summary = "Actualizar un ítem existente con imagen opcional")
+    public ResponseEntity<ItemDTOResponse> updateItem(
+            @PathVariable Long id,
+            @RequestPart("item") @Valid ItemDTORequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        ItemDTOResponse response = itemService.updateItem(id, request, file);
         return ResponseEntity.ok(response);
     }
 
@@ -59,5 +66,20 @@ public class ItemController {
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/image")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ROLE_ADMIN', 'RECEPCIONIST', 'ROLE_RECEPCIONIST')")
+    @Operation(summary = "Obtener la imagen de un ítem por ID")
+    public ResponseEntity<byte[]> getItemImage(@PathVariable Long id) {
+        byte[] image = itemService.getItemImage(id);
+
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG, según necesites
+                .body(image);
     }
 }
