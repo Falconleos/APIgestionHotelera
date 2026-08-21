@@ -7,6 +7,7 @@ import com.example.ultimate_hotel_software_v30.dto.response.BookingCancellationD
 import com.example.ultimate_hotel_software_v30.dto.response.BookingDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.PaymentDTOResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.RoomDTOResponse;
+import com.example.ultimate_hotel_software_v30.enums.BookingState;
 import com.example.ultimate_hotel_software_v30.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -167,6 +168,15 @@ public class BookingController {
     public ResponseEntity<PaymentDTOResponse> addPaymentToBooking(@Valid @RequestBody PaymentDTORequest request) {
         PaymentDTOResponse newPayment = bookingService.addPaymentToBooking(request);
         return new ResponseEntity<>(newPayment, HttpStatus.CREATED);
+    }
+
+    /*--------- 14. Listar reservas por estado específico (ADMIN o RECEPCIONIST) ---------------*/
+    @GetMapping("/state/{state}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
+    @Operation(summary = "Listar reservas por estado de reserva", description = "Filtra las reservas según su BookingState (PENDING, CONFIRMED, CHECKED_IN, etc.)")
+    public ResponseEntity<List<BookingDTOResponse>> getBookingsByState(@PathVariable BookingState state) {
+        List<BookingDTOResponse> bookings = bookingService.getBookingsByState(state);
+        return ResponseEntity.ok(bookings);
     }
 
 }

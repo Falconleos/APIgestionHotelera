@@ -51,4 +51,5 @@ public interface BookingService {
     List<PaymentDTOResponse> getPaymentsByBookingId(Long bookingId);
 
     PaymentDTOResponse addPaymentToBooking(PaymentDTORequest request);
+    
 }
