@@ -193,20 +193,34 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingStateConflictException("Esta reserva ya cuenta con un registro físico de cancelación en el sistema.");
         }
 
-        booking.setState(BookingState.CANCELLED);
-        booking.setActive(false);
-        bookingRepository.save(booking);
+        // 1. Obtener la cuenta financiera asociada a la reserva
+        AccountEntity account = accountRepository.findByBookingEntity_Id(booking.getId()).orElse(null);
 
-        AccountEntity account = accountRepository.findByBookingEntity_Id(booking.getId())
-                .orElseThrow(() -> new InvalidIdException("Account not found for booking ID: " + booking.getId()));
+        // 2. Validar condiciones de negocio:
+        // - Que la reserva anide un userEntity
+        // - Que existan pagos asociados a la cuenta de esta reserva
+        boolean hasUserEntity = (booking.getUserEntity() != null);
+        boolean hasPayments = (account != null && account.getPayments() != null && !account.getPayments().isEmpty() && account.getPaidAmount() > 0);
 
-        if (account.getPaidAmount() > 0) {
+        // - Que el front-end confirme explícitamente la creación de la nota de crédito
+        boolean wantsCreditNote = Boolean.TRUE.equals(request.getIssueCreditNote());
+
+        if (hasUserEntity && hasPayments && wantsCreditNote) {
             creditNoteService.createCreditNote(account, request.getReason());
             account.setState(com.example.ultimate_hotel_software_v30.enums.AccountState.REFUNDED);
         } else {
-            account.setState(com.example.ultimate_hotel_software_v30.enums.AccountState.CANCELLED);
+            if (account != null) {
+                account.setState(com.example.ultimate_hotel_software_v30.enums.AccountState.CANCELLED);
+            }
         }
-        accountRepository.save(account);
+
+        if (account != null) {
+            accountRepository.save(account);
+        }
+
+        booking.setState(BookingState.CANCELLED);
+        booking.setActive(false);
+        bookingRepository.save(booking);
 
         Object principal = SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();

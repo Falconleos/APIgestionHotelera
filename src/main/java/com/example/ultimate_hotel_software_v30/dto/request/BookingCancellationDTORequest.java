@@ -1,4 +1,5 @@
 package com.example.ultimate_hotel_software_v30.dto.request;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,4 +21,6 @@ public class BookingCancellationDTORequest {
     @Schema(description = "Motivo expresado por el pasajero para cancelar", example = "Problemas de salud o de viaje")
     private String reason;
 
+    @Schema(description = "Indica si se desea hacer una nota de crédito para devolución", example = "true")
+    private Boolean issueCreditNote;
 }
