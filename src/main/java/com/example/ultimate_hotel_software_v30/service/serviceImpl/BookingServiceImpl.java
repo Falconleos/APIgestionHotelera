@@ -17,6 +17,7 @@ import com.example.ultimate_hotel_software_v30.model.*;
 import com.example.ultimate_hotel_software_v30.repository.*;
 import com.example.ultimate_hotel_software_v30.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,10 @@ public class BookingServiceImpl implements BookingService {
     // Repositorio y Mapper de pagos (ajusta el nombre según tus clases existentes)
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+
+    //Qr code
+    @Value("${qr.code}")
+    private String qrCode;
 
     // 1. Busqueda por ID
     @Override
@@ -134,6 +140,12 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setUserEntity(null);
         }
+
+        // --- GENERACIÓN AUTOMÁTICA DEL QR ---
+        // Genera un código aleatorio único (ej: UUID sin guiones o con formato estándar)
+        String randomQrCode = qrCode + UUID.randomUUID().toString().toUpperCase();
+        booking.setQrBooking(randomQrCode);
+        // ------------------------------------
 
         booking.setUserBookingEntity(currentUser);
         booking.setRoomEntity(room);
@@ -461,4 +473,47 @@ public class BookingServiceImpl implements BookingService {
 
         return response;
     }
+
+    @Override
+    @Transactional
+    public BookingDTOResponse checkInByQr(String qrBooking) {
+        // 1. Buscar la reserva mediante el código QR escaneado
+        BookingEntity booking = bookingRepository.findByQrBooking(qrBooking)
+                .orElseThrow(() -> new BookingNotFoundException("No se encontró ninguna reserva asociada al código QR: " + qrBooking));
+
+        // 2. Validaciones de estado
+        if (booking.getState() == BookingState.CHECKED_IN) {
+            throw new BookingStateConflictException("Esta reserva ya se encuentra con Check-In realizado.");
+        }
+        if (booking.getState() == BookingState.CANCELLED ||
+                booking.getState() == BookingState.NO_SHOW ||
+                booking.getState() == BookingState.CONCLUDED ||
+                booking.getState() == BookingState.INTERRUPTED) {
+            throw new BookingStateConflictException("No se puede realizar el check-in para una reserva en estado: " + booking.getState());
+        }
+
+        // 3. Validar usuario asociado
+        if (booking.getUserEntity() == null) {
+            throw new UserNotFoundException("La reserva no tiene un usuario/huésped principal asociado para completar el ingreso.");
+        }
+
+        if (!booking.getUserEntity().isEnabled()) {
+            throw new DisabledUserException("El usuario asociado a esta reserva se encuentra deshabilitado.");
+        }
+
+        // 4. Cambiar estado a CHECKED_IN
+        booking.setState(BookingState.CHECKED_IN);
+
+        // Opcional: Registrar quién hizo el check-in (usuario recepcionista autenticado)
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String currentUsername = ((UserDetails) principal).getUsername();
+            UserEntity receptionist = userService.findEntityByUsername(currentUsername);
+            booking.setUserCheckInEntity(receptionist);
+        }
+
+        BookingEntity savedBooking = bookingRepository.save(booking);
+        return bookingMapper.toBookingDTOResponse(savedBooking);
+    }
+
 }

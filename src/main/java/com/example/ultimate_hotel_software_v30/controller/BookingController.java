@@ -179,4 +179,12 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    /*--------- 15. CheckIn mediante Qr ---------------*/
+    @PostMapping("/check-in/qr")
+    @Operation(summary = "Realizar Check-In escaneando el código QR de la reserva")
+    public ResponseEntity<BookingDTOResponse> checkInByQr(@RequestParam String qrCode) {
+        BookingDTOResponse response = bookingService.checkInByQr(qrCode);
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.example.ultimate_hotel_software_v30.dto.request.UserLoginDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.response.AuthSuccessDtoResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.AuthTokenResponse;
 import com.example.ultimate_hotel_software_v30.dto.response.RefreshTokenDTOResponse;
+import com.example.ultimate_hotel_software_v30.service.UserService; // <-- 1. Importar el UserService
 import com.example.ultimate_hotel_software_v30.service.serviceImpl.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Tag(name = "Autenticación", description = "Endpoints públicos para la gestión de accesos, registro y tokens")
-public class    AuthController {
+public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/register")
     @Operation(
@@ -40,7 +43,7 @@ public class    AuthController {
                     content = @Content(schema = @Schema(implementation = AuthTokenResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o conflicto con datos existentes")
     })
-    public ResponseEntity<AuthTokenResponse>register(@Valid @RequestBody UserDTORequest request){
+    public ResponseEntity<AuthTokenResponse> register(@Valid @RequestBody UserDTORequest request){
         AuthSuccessDtoResponse token = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.SET_COOKIE, token.responseCookie().toString())
@@ -57,10 +60,10 @@ public class    AuthController {
                     content = @Content(schema = @Schema(implementation = AuthTokenResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o usuario no encontrado")
     })
-    public ResponseEntity<AuthTokenResponse>login(@Valid @RequestBody UserLoginDTORequest request){
+    public ResponseEntity<AuthTokenResponse> login(@Valid @RequestBody UserLoginDTORequest request){
         AuthSuccessDtoResponse token = authService.login(request);
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE,token.responseCookie().toString())
+                .header(HttpHeaders.SET_COOKIE, token.responseCookie().toString())
                 .body(token.authTokenResponse());
     }
 
@@ -75,9 +78,9 @@ public class    AuthController {
             @ApiResponse(responseCode = "400", description = "No se suministró la cookie del Refresh Token"),
             @ApiResponse(responseCode = "403", description = "Refresh Token expirado o inexistente en la base de datos")
     })
-    public ResponseEntity<RefreshTokenDTOResponse>refresh(
-            @CookieValue(name = "refreshToken",required = false)String refreshtoken){
-        if(refreshtoken==null || refreshtoken.isBlank()){
+    public ResponseEntity<RefreshTokenDTOResponse> refresh(
+            @CookieValue(name = "refreshToken", required = false) String refreshtoken){
+        if(refreshtoken == null || refreshtoken.isBlank()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         RefreshTokenDTOResponse tokenResponse = authService.refreshAccessToken(refreshtoken);
@@ -92,11 +95,11 @@ public class    AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Sesión cerrada correctamente")
     })
-    public ResponseEntity<Void>logout(){
+    public ResponseEntity<Void> logout(){
         ResponseCookie cleanCookie = authService.logout();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,cleanCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, cleanCookie.toString())
                 .build();
     }
 
@@ -127,5 +130,33 @@ public class    AuthController {
         return ResponseEntity.ok().build();
     }
 
+    /*------ Endpoint público para obtener la foto de perfil por ID ------*/
+    @GetMapping("/{id}/profile-picture")
+    @Operation(
+            summary = "Obtener foto de perfil del usuario (Público)",
+            description = "Devuelve los bytes de la imagen de perfil asociada al usuario por su ID sin requerir autenticación previa."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Imagen obtenida exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario o imagen no encontrada")
+    })
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
+        byte[] imageBytes = userService.getProfilePicture(id);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG según corresponda a tu lógica
+                .body(imageBytes);
+    }
+
+    /*------ Endpoint público para obtener el ID de un usuario por su Username ------*/
+    @GetMapping("/by-username/{username}")
+    @Operation(
+            summary = "Obtener ID de usuario por username (Público)",
+            description = "Devuelve el ID numérico del usuario buscando por su nombre de usuario."
+    )
+    public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
+        Long userId = userService.findByUsername(username).getId(); // Ajusta según el método que tengas en tu UserService para buscar por username
+        return ResponseEntity.ok(userId);
+    }
 
 }
