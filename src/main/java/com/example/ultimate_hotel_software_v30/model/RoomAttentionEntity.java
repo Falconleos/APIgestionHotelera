@@ -43,6 +43,10 @@ public class RoomAttentionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean delivered = false;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(); // Asigna la fecha y hora exacta al guardar

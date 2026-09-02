@@ -156,16 +156,18 @@ public class BookingServiceImpl implements BookingService {
 
         BookingEntity savedBooking = bookingRepository.save(booking);
 
-        AccountEntity account = AccountEntity.builder()
-                .bookingEntity(savedBooking)
-                .baseAmount(totalPrice)
-                .servicesTotal(0.0)
-                .paidAmount(0.0)
-                .isPaid(false)
-                .adjustmentPercentage(0)
-                .build();
+        if (savedBooking.getUserEntity() != null) {
+            AccountEntity account = AccountEntity.builder()
+                    .bookingEntity(savedBooking)
+                    .baseAmount(totalPrice)
+                    .servicesTotal(0.0)
+                    .paidAmount(0.0)
+                    .isPaid(false)
+                    .adjustmentPercentage(0)
+                    .build();
 
-        accountRepository.save(account);
+            accountRepository.save(account);
+        }
 
         return bookingMapper.toBookingDTOResponse(savedBooking);
     }

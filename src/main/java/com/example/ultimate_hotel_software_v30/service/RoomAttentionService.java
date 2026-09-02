@@ -9,4 +9,5 @@ public interface RoomAttentionService {
     RoomAttentionDTOResponse addAttention(RoomAttentionDTORequest request);
     void removeAttention(Long id);
     List<RoomAttentionDTOResponse> getAttentionsByBookingId(Long bookingId);
+    RoomAttentionDTOResponse markAsDelivered(Long id);
 }

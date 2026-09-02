@@ -3,6 +3,7 @@ package com.example.ultimate_hotel_software_v30.controller;
 import com.example.ultimate_hotel_software_v30.dto.request.RoomAttentionDTORequest;
 import com.example.ultimate_hotel_software_v30.dto.response.RoomAttentionDTOResponse;
 import com.example.ultimate_hotel_software_v30.service.RoomAttentionService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,11 @@ public class RoomAttentionController {
     public ResponseEntity<Void> removeAttention(@PathVariable Long id) {
         roomAttentionService.removeAttention(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/deliver")
+    @Operation(summary = "Marcar una atención o consumo como entregado")
+    public ResponseEntity<RoomAttentionDTOResponse> markAsDelivered(@PathVariable Long id) {
+        return ResponseEntity.ok(roomAttentionService.markAsDelivered(id));
     }
 }

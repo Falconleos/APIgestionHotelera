@@ -102,4 +102,16 @@ public class RoomAttentionServiceImpl implements RoomAttentionService {
                 .map(roomAttentionMapper::toRoomAttentionDTOResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public RoomAttentionDTOResponse markAsDelivered(Long id) {
+        RoomAttentionEntity attention = roomAttentionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Room attention not found with ID: " + id));
+
+        attention.setDelivered(true);
+        RoomAttentionEntity updated = roomAttentionRepository.save(attention);
+
+        return roomAttentionMapper.toRoomAttentionDTOResponse(updated);
+    }
 }

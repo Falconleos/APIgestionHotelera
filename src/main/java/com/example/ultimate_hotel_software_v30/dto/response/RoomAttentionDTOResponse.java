@@ -42,4 +42,6 @@ public class RoomAttentionDTOResponse {
     @Schema(description = "Nombre del empleado que cargó o cobró el consumo", example = "Juan Pérez")
     private String employeeUsername;
 
+    @Schema(description = "Indica si el pedido o servicio ya fue entregado", example = "false")
+    private Boolean delivered;
 }
