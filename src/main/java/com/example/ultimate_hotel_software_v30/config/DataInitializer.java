@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final EmployeeRepository employeeRepository; // Se mantiene por si se usa en otros lados, aunque ya no es necesario para guardar el admin inicial
+    private final EmployeeRepository employeeRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final PasswordEncoder passwordEncoder;
 
