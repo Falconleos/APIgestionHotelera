@@ -93,9 +93,6 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.delete(payment);
     }
 
-    /**
-     * Método auxiliar privado para centralizar el recálculo financiero de la cuenta.
-     */
     private void recalculateAccountFinancials(AccountEntity account) {
         double base = account.getBaseAmount() != null ? account.getBaseAmount() : 0.0;
         double services = account.getServicesTotal() != null ? account.getServicesTotal() : 0.0;

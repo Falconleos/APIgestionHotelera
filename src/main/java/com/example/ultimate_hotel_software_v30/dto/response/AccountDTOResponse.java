@@ -37,7 +37,6 @@ public class AccountDTOResponse {
     @Schema(description = "Porcentaje de recargo (positivo) o descuento (negativo) aplicado a la cuenta", example = "0")
     private Integer adjustmentPercentage;
 
-    // --- Nuevos campos extraídos de la Reserva y Habitación ---
     @Schema(description = "Datos del huésped principal")
     private UserDetailsDTO user;
 

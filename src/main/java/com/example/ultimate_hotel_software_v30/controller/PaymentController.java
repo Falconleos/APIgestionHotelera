@@ -24,7 +24,6 @@ public class PaymentController {
     public ResponseEntity<PaymentDTOResponse> addPaymentToAccount(
             @Valid @RequestBody PaymentDTORequest request,
             Principal principal) {
-        // principal.getName() nos da el username del usuario logueado actualmente gracias a Spring Security
         String currentUsername = principal != null ? principal.getName() : "system";
         PaymentDTOResponse response = paymentService.addPaymentToAccount(request, currentUsername);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

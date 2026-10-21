@@ -23,8 +23,8 @@ public class CreditNoteServiceImpl implements CreditNoteService {
     public CreditNoteDTOResponse createCreditNote(AccountEntity account, String cancellationReason) {
         CreditNoteEntity creditNote = CreditNoteEntity.builder()
                 .account(account)
-                .amount(account.getPaidAmount()) // El monto devuelto es el pagado hasta el momento
-                .reason(cancellationReason)      // Heredado de la reserva
+                .amount(account.getPaidAmount())
+                .reason(cancellationReason)
                 .build();
 
         CreditNoteEntity savedNote = creditNoteRepository.save(creditNote);
@@ -71,9 +71,6 @@ public class CreditNoteServiceImpl implements CreditNoteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Método auxiliar privado para mapear la entidad a DTO de respuesta y evitar repetir código
-     */
     private CreditNoteDTOResponse mapToResponse(CreditNoteEntity entity) {
         return CreditNoteDTOResponse.builder()
                 .id(entity.getId())

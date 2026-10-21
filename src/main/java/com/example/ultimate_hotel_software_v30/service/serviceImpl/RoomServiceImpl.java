@@ -74,7 +74,6 @@ public class RoomServiceImpl implements RoomService {
         RoomEntity room = roomMapper.toRoomEntity(dto);
         room.setType(roomType);
 
-        // Si el DTO no trae el estado o quieres forzar el que viene:
         if (dto.getState() != null) {
             room.setState(dto.getState());
         } else {
@@ -117,17 +116,14 @@ public class RoomServiceImpl implements RoomService {
     public RoomDTOResponse update(Long id, RoomUpdateDTORequest dto) {
         RoomEntity room = findEntityById(id);
 
-        // Si el DTO incluye un cambio de tipo de habitación, lo actualizamos
         if (dto.getRoomTypeId() != null && !dto.getRoomTypeId().equals(room.getType().getId())) {
             RoomTypeEntity newType = roomTypeRepository.findById(dto.getRoomTypeId())
                     .orElseThrow(() -> new RoomNotFoundException("Room Type not found with ID: " + dto.getRoomTypeId()));
             room.setType(newType);
         }
 
-        // Mapeo de actualizaciones básicas (ajustado al nuevo nombre del método del mapper)
         RoomEntity roomUpdateSource = roomMapper.toRoomEntityFromUpdate(dto);
 
-        // Aplicamos campos modificados manualmente o mediante mapper auxiliar si lo prefieres
         if (roomUpdateSource.getNumber() != null) {
             room.setNumber(roomUpdateSource.getNumber());
         }

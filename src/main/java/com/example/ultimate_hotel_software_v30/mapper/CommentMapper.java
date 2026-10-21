@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface CommentMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "userEntity", ignore = true) // Se asigna manualmente en el servicio
+    @Mapping(target = "userEntity", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     CommentEntity toCommentEntity(CommentDTORequest request);
 

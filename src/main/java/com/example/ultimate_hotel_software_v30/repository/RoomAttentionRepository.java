@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface RoomAttentionRepository extends JpaRepository<RoomAttentionEntity, Long> {
 
-    // Método corregido para buscar por el ID de la reserva (BookingEntity)
     List<RoomAttentionEntity> findByBookingEntity_Id(Long bookingId);
 }

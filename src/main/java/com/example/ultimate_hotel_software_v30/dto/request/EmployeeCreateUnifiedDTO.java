@@ -109,7 +109,7 @@ public class EmployeeCreateUnifiedDTO {
     @NotNull(message = "Birth day is necessary")
     @Past(message = "BirthDay must be in the past")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // <-- Agregado para parseo desde FormData
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
 
     @Schema(description = "Rol asignado al usuario", example = "RECEPCIONIST", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -129,7 +129,7 @@ public class EmployeeCreateUnifiedDTO {
     // Datos del Empleado
     private String employeeNumber;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // <-- Agregado para parseo desde FormData
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate hireDate;
 
     private Shift shift;

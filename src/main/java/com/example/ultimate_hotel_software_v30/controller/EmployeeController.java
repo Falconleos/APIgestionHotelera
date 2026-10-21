@@ -38,7 +38,7 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTOResponse> createEmployee(
             @ModelAttribute @Valid EmployeeCreateUnifiedDTO request) {
 
-        // Como el archivo y los campos ya viajan limpios desde Angular, procesamos el DTO unificado
+
         return new ResponseEntity<>(employeeService.createEmployee(request), HttpStatus.CREATED);
     }
 

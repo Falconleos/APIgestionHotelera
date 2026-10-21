@@ -156,7 +156,7 @@ public class AuthService {
         passwordResetTokenRepository.save(resetTokenEntity);
 
         //enviar email // a completar mediante consumo de API externa
-        System.out.println("Enlace enviado a " + email + ": https://tuapp.com/reset-password?token=" + token);
+        System.out.println("Enlace enviado a " + email + ": https://direccionDeEmail/reset-password?token=" + token);
     }
 
     @Transactional

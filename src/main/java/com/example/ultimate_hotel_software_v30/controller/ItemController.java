@@ -79,7 +79,7 @@ public class ItemController {
         }
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG, según necesites
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(image);
     }
 }

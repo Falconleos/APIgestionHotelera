@@ -30,7 +30,7 @@ public class RoomAttentionServiceImpl implements RoomAttentionService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final AccountService accountService;
-    private final RoomAttentionMapper roomAttentionMapper; // Inyectamos el MapStruct
+    private final RoomAttentionMapper roomAttentionMapper;
 
     @Override
     @Transactional

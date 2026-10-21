@@ -9,13 +9,10 @@ import java.util.List;
 @Repository
 public interface CreditNoteRepository extends JpaRepository<CreditNoteEntity, Long> {
 
-    // Buscar por ID de cuenta (este ya estaba bien)
+    // Buscar por ID de cuenta
     List<CreditNoteEntity> findByAccountId(Long accountId);
 
-    // Como en AccountEntity el campo se llama 'bookingEntity', la ruta correcta es:
     List<CreditNoteEntity> findByAccountBookingEntityId(Long bookingId);
 
-    // Para buscar por usuario, asumiendo que en BookingEntity el usuario se llama 'user' o 'userEntity' y su ID es 'id'.
-    // * Si en tu BookingEntity el usuario se llama 'user', usa esta línea:
     List<CreditNoteEntity> findByAccountBookingEntityUserEntityId(Long userId);
 }

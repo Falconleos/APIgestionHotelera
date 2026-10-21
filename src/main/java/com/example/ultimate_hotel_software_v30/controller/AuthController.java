@@ -144,7 +144,7 @@ public class AuthController {
         byte[] imageBytes = userService.getProfilePicture(id);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG según corresponda a tu lógica
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(imageBytes);
     }
 
@@ -155,7 +155,7 @@ public class AuthController {
             description = "Devuelve el ID numérico del usuario buscando por su nombre de usuario."
     )
     public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
-        Long userId = userService.findByUsername(username).getId(); // Ajusta según el método que tengas en tu UserService para buscar por username
+        Long userId = userService.findByUsername(username).getId();
         return ResponseEntity.ok(userId);
     }
 

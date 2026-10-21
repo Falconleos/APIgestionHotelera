@@ -47,7 +47,7 @@ public class UserController {
 
     //-----------------------------recepcionista o administrador crean usuario---------------------------//
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // <-- Indicamos que recibe multipart
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONIST')")
     @Operation(
             summary = "Crear nuevo usuario con foto de perfil (Personal)",
@@ -138,9 +138,8 @@ public class UserController {
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
         byte[] imageBytes = userService.getProfilePicture(id);
 
-        // Puedes configurar el tipo de contenido genérico de imagen
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // O IMAGE_PNG según corresponda
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(imageBytes);
     }
 

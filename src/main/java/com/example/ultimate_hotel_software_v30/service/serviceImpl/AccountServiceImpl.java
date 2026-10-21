@@ -105,9 +105,6 @@ public class AccountServiceImpl implements AccountService {
         return paymentService.getPaymentsByBookingId(bookingId);
     }
 
-    /**
-     * Método auxiliar privado para centralizar la lógica de recálculo financiero en el Service.
-     */
     private void recalculateAndSave(AccountEntity account) {
         double base = account.getBaseAmount() != null ? account.getBaseAmount() : 0.0;
         double services = account.getServicesTotal() != null ? account.getServicesTotal() : 0.0;
